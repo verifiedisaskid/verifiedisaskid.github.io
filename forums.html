@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Forum</title>
+    <style>
+        #forum-container {
+            max-width: 600px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="forum-container">
+    <h1>Simple Forum</h1>
+    
+    <div id="posts-container"></div>
+    
+    <textarea id="post-input" placeholder="Type your post"></textarea>
+    <button onclick="submitPost()">Submit Post</button>
+</div>
+
+<script>
+    // Load saved posts from localStorage on page load
+    document.addEventListener('DOMContentLoaded', function () {
+        loadPosts();
+    });
+
+    function submitPost() {
+        // Get the post input value
+        var postInput = document.getElementById('post-input');
+        var postText = postInput.value.trim();
+
+        // Check if the input is not empty
+        if (postText !== '') {
+            // Create a post element
+            var postElement = document.createElement('div');
+            postElement.className = 'post';
+            postElement.textContent = postText;
+
+            // Append the post element to the posts container
+            var postsContainer = document.getElementById('posts-container');
+            postsContainer.appendChild(postElement);
+
+            // Clear the post input
+            postInput.value = '';
+
+            // Save posts to localStorage
+            savePosts();
+        }
+    }
+
+    function savePosts() {
+        // Get all post elements
+        var postElements = document.getElementsByClassName('post');
+
+        // Extract the text content of each post and store in an array
+        var posts = Array.from(postElements).map(function (element) {
+            return element.textContent;
+        });
+
+        // Save the posts array to localStorage
+        localStorage.setItem('forumPosts', JSON.stringify(posts));
+    }
+
+    function loadPosts() {
+        // Retrieve posts array from localStorage
+        var storedPosts = localStorage.getItem('forumPosts');
+
+        // Parse the JSON string to get the array of posts
+        var posts = JSON.parse(storedPosts) || [];
+
+        // Create post elements and append to the posts container
+        var postsContainer = document.getElementById('posts-container');
+        posts.forEach(function (postText) {
+            var postElement = document.createElement('div');
+            postElement.className = 'post';
+            postElement.textContent = postText;
+            postsContainer.appendChild(postElement);
+        });
+    }
+</script>
+
+</body>
+</html>
